@@ -1,0 +1,100 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+def plot_purchase_distribution(csv_file):
+    df = pd.read_csv(csv_file)
+
+    min_val = df['purchase_amount'].min()
+    mean_val = df['purchase_amount'].mean()
+    max_val = df['purchase_amount'].max()
+
+    df['segment'] = pd.cut(
+        df['purchase_amount'],
+        bins=3,
+        labels=['Low', 'Mid', 'High'],
+        include_lowest=True
+    )
+
+    segment_counts = df['segment'].value_counts().to_dict()
+
+    sorted_counts = {
+        k: segment_counts.get(k, 0)
+        for k in ['Low', 'Mid', 'High']
+    }
+
+    summary_str = ", ".join(
+        [f"{k}({v})" for k, v in sorted_counts.items()]
+    )
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    sns.histplot(
+        data=df,
+        x='purchase_amount',
+        kde=True,
+        ax=ax,
+        color='#1f77b4',
+        edgecolor='white',
+        alpha=0.6,
+        zorder=3
+    )
+
+    ax.axvline(
+        min_val,
+        color='#2ca02c',
+        linestyle='--',
+        linewidth=2,
+        label=f"Min({min_val:.2f})",
+        zorder=4
+    )
+
+    ax.axvline(
+        mean_val,
+        color='#d62728',
+        linestyle='-',
+        linewidth=2,
+        label=f"Avg({mean_val:.2f})",
+        zorder=4
+    )
+
+    ax.axvline(
+        max_val,
+        color='#9467bd',
+        linestyle=':',
+        linewidth=2,
+        label=f"Max({max_val:.2f})",
+        zorder=4
+    )
+
+    ax.set_title(
+        f"Customer Purchase Distribution\nSegments: [{summary_str}]",
+        fontsize=13,
+        pad=15,
+        fontweight='bold'
+    )
+
+    ax.set_xlabel(
+        "Purchase Amount (USD)",
+        fontsize=11,
+        labelpad=10
+    )
+
+    ax.set_ylabel(
+        "Count / Density",
+        fontsize=11,
+        labelpad=10
+    )
+
+    ax.grid(
+        axis='y',
+        linestyle='--',
+        alpha=0.5,
+        zorder=0
+    )
+
+    ax.legend(loc='upper right')
+
+    plt.tight_layout()
+
+    return fig
