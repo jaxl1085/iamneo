@@ -1,0 +1,51 @@
+# main.py - Implement your code here
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+def plot_monthly_sales(csv_file):
+    df = pd.read_csv(csv_file)
+
+        df['growth'] = df['sales'].diff().fillna(0)
+            avg_sales = df['sales'].mean()
+                best_month = df.loc[df['sales'].idxmax(), 'month']
+
+                    fig, ax = plt.subplots(figsize=(10, 6))
+
+                        ax.plot(
+                                    df['month'],
+                                            df['sales'],
+                                                    marker='o',
+                                                            color='#1f77b4',
+                                                                    linewidth=2,
+                                                                            label='Monthly Sales'
+                        )
+
+                            ax.axhline(
+                                        avg_sales,
+                                                color='#d62728',
+                                                        linestyle='--',
+                                                                linewidth=1.5,
+                                                                        label=f'Average Sales ({avg_sales:.2f})'
+                            )
+
+                                ax.set_title(
+                                            f"Monthly Sales Performance Trend (Best Month: {best_month})",
+                                                    fontsize=14,
+                                                            pad=15,
+                                                                    fontweight='bold'
+                                )
+
+                                    ax.set_xlabel("Month", fontsize=11, labelpad=10)
+                                        ax.set_ylabel("Sales Value", fontsize=11, labelpad=10)
+
+                                            ax.grid(True, linestyle=':', alpha=0.6, zorder=0)
+                                                ax.legend(loc='best')
+
+                                                    plt.tight_layout()
+
+                                                        return fig
+                                )
+                            )
+                        )
